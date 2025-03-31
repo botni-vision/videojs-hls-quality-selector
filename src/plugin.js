@@ -74,8 +74,6 @@ class HlsQualitySelector extends Plugin {
 
       concreteButtonInstance
         .menuButton_.$('.vjs-icon-placeholder').className += icon;
-    } else {
-      this.setButtonInnerText(player.localize('Auto'));
     }
     concreteButtonInstance.removeClass('vjs-hidden');
 
@@ -137,19 +135,13 @@ class HlsQualitySelector extends Plugin {
         return -1;
       }
       if (current.item.value < next.item.value) {
-        return -1;
+        return 1;
       }
       if (current.item.value > next.item.value) {
-        return 1;
+        return -1;
       }
       return 0;
     });
-
-    levelItems.push(this.getQualityMenuItem.call(this, {
-      label: this.player.localize('Auto'),
-      value: 'auto',
-      selected: true
-    }));
 
     if (this._qualityButton) {
       this._qualityButton.createItems = () => {
@@ -172,25 +164,25 @@ class HlsQualitySelector extends Plugin {
     this._currentQuality = quality;
 
     if (this.options.displayCurrentQuality) {
-      this.setButtonInnerText(quality === 'auto' ? this.player.localize('Auto') : `${quality}p`);
+      this.setButtonInnerText(`${quality}p`);
     }
 
     for (let i = 0; i < qualityList.length; ++i) {
       const { width, height } = qualityList[i];
       const pixels = width > height ? height : width;
 
-      qualityList[i].enabled = (pixels === quality || quality === 'auto');
+      qualityList[i].enabled = (pixels === quality );
     }
     this._qualityButton.unpressButton();
   }
 
   /**
-   * Return the current set quality or 'auto'
+   * Return the current set quality
    *
    * @return {string} the currently set quality
    */
   getCurrentQuality() {
-    return this._currentQuality || 'auto';
+    return this._currentQuality;
   }
 
 }
